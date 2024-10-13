@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
@@ -29,7 +30,9 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet]
         public async Task<IEnumerable<RoleItemResponse>> GetRolesAsync()
         {
-            var roles = await _rolesRepository.GetAllAsync();
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+            var roles = await _rolesRepository.GetAllAsync(token);
 
             var rolesModelList = roles.Select(x =>
                 new RoleItemResponse()

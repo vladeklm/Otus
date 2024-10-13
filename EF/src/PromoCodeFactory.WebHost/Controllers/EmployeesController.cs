@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
@@ -31,7 +32,9 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet]
         public async Task<List<EmployeeShortResponse>> GetEmployeesAsync()
         {
-            var employees = await _employeeRepository.GetAllAsync();
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+            var employees = await _employeeRepository.GetAllAsync(token);
 
             var employeesModelList = employees.Select(x =>
                 new EmployeeShortResponse()
@@ -51,7 +54,9 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<EmployeeResponse>> GetEmployeeByIdAsync(Guid id)
         {
-            var employee = await _employeeRepository.GetByIdAsync(id);
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+            var employee = await _employeeRepository.GetAsync(id, token);
 
             if (employee == null)
                 return NotFound();
