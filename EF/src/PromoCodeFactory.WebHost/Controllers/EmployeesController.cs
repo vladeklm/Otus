@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.Servicies.DataTransferObjects;
 using PromoCodeFactory.WebHost.Models;
 
 namespace PromoCodeFactory.WebHost.Controllers
@@ -40,8 +41,8 @@ namespace PromoCodeFactory.WebHost.Controllers
                 new EmployeeShortResponse()
                 {
                     Id = x.Id,
-                    Email = x.Email,
-                    FullName = x.FullName,
+                    Email = x.Email/*,
+                    FullName = x.FullName,*/
                 }).ToList();
 
             return employeesModelList;
@@ -65,12 +66,12 @@ namespace PromoCodeFactory.WebHost.Controllers
             {
                 Id = employee.Id,
                 Email = employee.Email,
-                Role = new RoleItemResponse()
+                Role = new RoleItemDto()
                 {
                     Name = employee.Role.Name,
                     Description = employee.Role.Description
                 },
-                FullName = employee.FullName,
+                //FullName = employee.FullName,
                 AppliedPromocodesCount = employee.AppliedPromocodesCount
             };
 

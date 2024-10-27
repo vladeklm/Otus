@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
+using PromoCodeFactory.Servicies.Abstractions;
+using PromoCodeFactory.Servicies.DataTransferObjects;
 using PromoCodeFactory.WebHost.Models;
 
 namespace PromoCodeFactory.WebHost.Controllers
@@ -16,11 +18,11 @@ namespace PromoCodeFactory.WebHost.Controllers
     [Route("api/v1/[controller]")]
     public class RolesController
     {
-        private readonly IRepository<Role> _rolesRepository;
+        private readonly IRolesService _rolesService;
 
-        public RolesController(IRepository<Role> rolesRepository)
+        public RolesController(IRolesService rolesService)
         {
-            _rolesRepository = rolesRepository;
+            _rolesService = rolesService;
         }
 
         /// <summary>
@@ -28,21 +30,11 @@ namespace PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<RoleItemResponse>> GetRolesAsync()
+        public async Task<IEnumerable<RoleItemDto>> GetRolesAsync()
         {
             var source = new CancellationTokenSource();
             var token = source.Token;
-            var roles = await _rolesRepository.GetAllAsync(token);
-
-            var rolesModelList = roles.Select(x =>
-                new RoleItemResponse()
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description
-                }).ToList();
-
-            return rolesModelList;
+            return await _rolesService.GetRolesAsync(token);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using PromoCodeFactory.Servicies.DataTransferObjects;
 
 namespace PromoCodeFactory.WebHost.Models
 {
@@ -9,7 +10,7 @@ namespace PromoCodeFactory.WebHost.Models
 
         public string Email { get; set; }
 
-        public RoleItemResponse Role { get; set; }
+        public RoleItemDto Role { get; set; }
 
         public int AppliedPromocodesCount { get; set; }
     }

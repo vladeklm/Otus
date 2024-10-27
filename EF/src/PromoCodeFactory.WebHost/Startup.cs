@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromoCodeFactory.Core.Abstractions.Repositories;
@@ -9,20 +10,30 @@ using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.DataAccess;
 using PromoCodeFactory.DataAccess.Data;
 using PromoCodeFactory.DataAccess.Repositories;
+using PromoCodeFactory.Servicies.Abstractions;
+using PromoCodeFactory.Servicies.Implementations;
+using PromoCodeFactory.WebHost.Settings;
 
 namespace PromoCodeFactory.WebHost
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        private IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        
         public void ConfigureServices(IServiceCollection services)
         {
+            var applicationSettings = Configuration.Get<ApplicationSettings>();
             services.AddControllers();
             services.AddScoped(typeof(IRepository<Employee>), (x) =>
                 new InMemoryRepository<Employee>(FakeDataFactory.Employees));
             services.AddScoped(typeof(IRepository<Role>), (x) =>
                 new InMemoryRepository<Role>(FakeDataFactory.Roles));
+            services.AddScoped<IRepository<Role>, RoleRepository>();
+            services.AddScoped<IRolesService, RolesService>();
             services.AddScoped(typeof(IRepository<Preference>), (x) =>
                 new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
             services.AddScoped(typeof(IRepository<Customer>), (x) =>
@@ -34,7 +45,9 @@ namespace PromoCodeFactory.WebHost
                 options.Version = "1.0";
             });
 
-            services.AddDbContext<AppDbContext>();
+            services.AddDbContext<AppDbContext>(optionsBuilder
+                => optionsBuilder
+                    .UseNpgsql(applicationSettings.ConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

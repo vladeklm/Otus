@@ -14,7 +14,7 @@ namespace PromoCodeFactory.Core.Domain.Administration
         [MaxLength(75)]
         public string LastName { get; set; }
 
-        public string FullName => $"{FirstName} {LastName}";
+        //public string FullName => $"{FirstName} {LastName}";
 
         [MaxLength(75)]
         public string Email { get; set; }

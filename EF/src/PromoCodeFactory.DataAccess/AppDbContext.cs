@@ -20,7 +20,8 @@ public class AppDbContext: DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=otus.db");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=otusdb;Username=otusdbuser;Password=otusdb321");
+        //base.OnConfiguring(optionsBuilder);
     }
 
 }
